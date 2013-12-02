@@ -1,0 +1,34 @@
+CROSS_HOST="x86_64-w64-mingw32"
+inherit cross
+
+NAME="mingw64-x86_64-SDL"
+VERSION=1.2.15
+RELEASE=1
+CATEGORY="Devel"
+SUMMARY="Simple DirectMedia Layer core library for Win64 toolchain"
+DESCRIPTION="This is the Simple DirectMedia Layer, a general API that provides
+low level access to audio, keyboard, mouse, joystick, 3D hardware via OpenGL,
+and 2D framebuffer across multiple platforms."
+HOMEPAGE="http://www.libsdl.org/"
+SRC_URI="http://www.libsdl.org/release/SDL-${VERSION}.tar.gz"
+SRC_DIR="SDL-${VERSION}"
+
+DISTCLEANFILES="include/SDL_config.h"
+
+# The included libtool macros have been hacked for the *-*-mingw* target to
+# produce SDL.dll (instead of the usual libSDL-1-2-0.dll) and to set
+# deplibs_check_method=pass_all (to allow linking with -ldxguid, which is
+# static).  Therefore, we must use these macros and the corresponding ltmain.sh.
+NO_LIBTOOLIZE=1
+NO_AUTOHEADER=1
+ACLOCAL_FLAGS="-I acinclude"
+
+src_install() {
+	cd ${B}
+	cyginstall
+	rm -fr ${D}${CROSS_DATADIR}/man/
+}
+
+DOCS="README-SDL.txt README.Porting"
+
+KEEP_LA_FILES="none"
